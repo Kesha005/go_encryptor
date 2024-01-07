@@ -1,4 +1,4 @@
-package encryptor
+package go_encryptor
 
 import (
 	"crypto/aes"
