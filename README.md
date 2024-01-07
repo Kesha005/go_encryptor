@@ -29,7 +29,12 @@ Firstly we need config our .env file and add there "SECRET_KEY" and "IV_16_KEY"
 <p>Import package</p>
 
 <pre>
-    <code>import "github.com/Kesha005/go_encryptor"</code>
+    <code>import (
+	"github.com/Kesha005/go_encryptor"
+	"fmt"
+	"github.com/joho/godotenv"
+
+)</code>
 </pre>
 
 <p>Encryption and decryption</p>
