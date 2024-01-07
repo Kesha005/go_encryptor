@@ -27,20 +27,20 @@ Firstly we need config our .env file and add there "SECRET_KEY" and "IV_16_KEY"
 </pre>
 <pre>
     <code>
-        StringToEncrypt := "Encrypting this string"
-	    godotenv.Load(".env")
-	    fmt.Println(StringToEncrypt)
-	    encText, err := encryptor.Encrypt(StringToEncrypt)
-	    if err != nil {
-		    fmt.Println("error encrypting your classified text: ", err)
-	    }
-	    fmt.Println(encText)
-	    // To decrypt the original StringToEncrypt
-	    decText, err := encryptor.Decrypt(encText)
-	    if err != nil {
-		    fmt.Println("error decrypting your encrypted text: ", err)
-	    }
-	    fmt.Println(decText)
+    StringToEncrypt := "Encrypting this string"
+	godotenv.Load(".env")
+	fmt.Println(StringToEncrypt)
+	encText, err := encryptor.Encrypt(StringToEncrypt)
+	if err != nil {
+		fmt.Println("error encrypting your classified text: ", err)
+	}
+	fmt.Println(encText)
+	// To decrypt the original StringToEncrypt
+	decText, err := encryptor.Decrypt(encText)
+	if err != nil {
+		fmt.Println("error decrypting your encrypted text: ", err)
+	}
+	fmt.Println(decText)
     </code>
 </pre>
 
