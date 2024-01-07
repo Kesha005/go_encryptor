@@ -1,4 +1,4 @@
-module go_encryptor
+module github.com/Kesha005/go_encryptor
 
 go 1.20
 
