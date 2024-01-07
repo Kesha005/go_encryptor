@@ -8,6 +8,10 @@ Install from repository
 <code>go get github.com/Kesha005/go_encryptor</code>
 </pre>
 
+# Where to use
+
+Encryption and decryption are used to secure data in auth,message systems and in cybersecurity
+
 #  Usage
 
 Firstly we need config our .env file and add there "SECRET_KEY" and "IV_16_KEY"
