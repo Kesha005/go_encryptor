@@ -21,10 +21,14 @@ Firstly we need config our .env file and add there "SECRET_KEY" and "IV_16_KEY"
 </pre>
 
 <h4>Example:</h4>
+
 <p>Import package</p>
+
 <pre>
     <code>import "github.com/Kesha005/go_encryptor"</code>
 </pre>
+
+<p>Encryption and decryption</p>
 <pre>
     <code>
     StringToEncrypt := "Encrypting this string"
