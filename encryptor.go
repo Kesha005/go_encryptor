@@ -1,20 +1,18 @@
 package encryptor
 
-
 import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
+	"os"
 	"fmt"
+	"github.com/joho/godotenv"
 )
 
-var bytes = []byte{35, 46, 57, 24, 85, 35, 24, 74, 87, 35, 88, 98, 66, 32, 14, 05}
-
-// This should be in an env file in production
-const MySecret string = "abc&1*~#^2^#s0^=)^^7%b34"
 
 func Encode(b []byte) string {
 	return base64.StdEncoding.EncodeToString(b)
+	
 }
 func Decode(s string) []byte {
 	data, err := base64.StdEncoding.DecodeString(s)
@@ -25,7 +23,13 @@ func Decode(s string) []byte {
 }
 
 // Encrypt method is to encrypt or hide any classified text
-func Encrypt(text, MySecret string) (string, error) {
+func Encrypt(text string) (string, error) {
+	
+var bytes = []byte(os.Getenv("IV_16_KEY"))
+
+// This should be in an env file in production
+var MySecret string = os.Getenv("SECRET_KEY")
+
 	block, err := aes.NewCipher([]byte(MySecret))
 	if err != nil {
 		return "", err
@@ -38,7 +42,12 @@ func Encrypt(text, MySecret string) (string, error) {
 }
 
 // Decrypt method is to extract back the encrypted text
-func Decrypt(text, MySecret string) (string, error) {
+func Decrypt(text string) (string, error) {
+	
+var bytes = []byte(os.Getenv("IV_16_KEY"))
+
+// This should be in an env file in production
+var MySecret string = os.Getenv("SECRET_KEY")
 	block, err := aes.NewCipher([]byte(MySecret))
 	if err != nil {
 		return "", err
@@ -51,14 +60,15 @@ func Decrypt(text, MySecret string) (string, error) {
 }
 func main() {
 	StringToEncrypt := "Encrypting this string"
-	// To encrypt the StringToEncrypt
-	encText, err := Encrypt(StringToEncrypt, MySecret)
+	godotenv.Load(".env")
+	fmt.Println(StringToEncrypt)
+	encText, err := Encrypt(StringToEncrypt)
 	if err != nil {
 		fmt.Println("error encrypting your classified text: ", err)
 	}
 	fmt.Println(encText)
 	// To decrypt the original StringToEncrypt
-	decText, err := Decrypt("Li5E8RFcV/EPZY/neyCXQYjrfa/atA==", MySecret)
+	decText, err := Decrypt(encText)
 	if err != nil {
 		fmt.Println("error decrypting your encrypted text: ", err)
 	}
