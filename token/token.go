@@ -26,5 +26,18 @@ func GenerateToken(id int, username string ) (string, error) {
 }
 
 func ControlToken(input_token string)(string,error){
+	token, err := jwt.Parse(input_token, func(token *jwt.Token) (interface{},error){
+		return secret,nil
+	})
+
+	if err!= nil{
+		return "There are error in token",err
+	}
+	if !token.Valid{
+		return "Invalid token",err
+	}
+
+	return "It is ok ", nil
+
 
 }
