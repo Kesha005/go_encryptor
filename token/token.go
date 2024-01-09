@@ -42,5 +42,4 @@ func ControlToken(input_token string)(string,error){
 
 	return "It is ok ", nil
 
-
 }
