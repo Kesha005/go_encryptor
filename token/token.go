@@ -8,9 +8,6 @@ import (
 )
 
 
-
-
-
 func GenerateToken(id int, username string ) (string, error) {
 	var secret = []byte(os.Getenv("SECRET_KEY"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
