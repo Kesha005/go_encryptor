@@ -24,3 +24,7 @@ func GenerateToken(id int, username string ) (string, error) {
 	return tokenString, nil
 
 }
+
+func ControlToken(input_token string)(string,error){
+
+}
