@@ -1,6 +1,7 @@
 package token
 
 import (
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -8,9 +9,10 @@ import (
 
 
 
-var secret = []byte("121212121")
+
 
 func GenerateToken(id int, username string ) (string, error) {
+	var secret = []byte(os.Getenv("SECRET_KEY"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"id":id ,
@@ -26,6 +28,7 @@ func GenerateToken(id int, username string ) (string, error) {
 }
 
 func ControlToken(input_token string)(string,error){
+	var secret = []byte(os.Getenv("SECRET_KEY"))
 	token, err := jwt.Parse(input_token, func(token *jwt.Token) (interface{},error){
 		return secret,nil
 	})
