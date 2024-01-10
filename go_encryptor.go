@@ -5,8 +5,6 @@ import (
 	"crypto/cipher"
 	"encoding/base64"
 	"os"
-	"fmt"
-	"github.com/joho/godotenv"
 )
 
 
@@ -57,20 +55,4 @@ var MySecret string = os.Getenv("SECRET_KEY")
 	plainText := make([]byte, len(cipherText))
 	cfb.XORKeyStream(plainText, cipherText)
 	return string(plainText), nil
-}
-func main() {
-	StringToEncrypt := "Encrypting this string"
-	godotenv.Load(".env")
-	fmt.Println(StringToEncrypt)
-	encText, err := Encrypt(StringToEncrypt)
-	if err != nil {
-		fmt.Println("error encrypting your classified text: ", err)
-	}
-	fmt.Println(encText)
-	// To decrypt the original StringToEncrypt
-	decText, err := Decrypt(encText)
-	if err != nil {
-		fmt.Println("error decrypting your encrypted text: ", err)
-	}
-	fmt.Println(decText)
 }
