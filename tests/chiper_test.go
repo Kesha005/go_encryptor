@@ -8,17 +8,16 @@ import (
 	"github.com/joho/godotenv"
 )
 
-
-func TestChiper(t *testing.T){
+func TestChiper(t *testing.T) {
 	godotenv.Load("../.env")
-	
+
 	var word string = "Hello world"
-	chiped,err := go_encryptor.Encrypt(word)
-	if err!=nil{
+	chiped, err := go_encryptor.Encrypt(word)
+	if err != nil {
 		fmt.Println(err)
 	}
-	dechiped,deeer := go_encryptor.Decrypt(chiped)
-	if deeer !=nil{
+	dechiped, deeer := go_encryptor.Decrypt(chiped)
+	if deeer != nil {
 		fmt.Println(deeer.Error())
 	}
 	if dechiped != word {
