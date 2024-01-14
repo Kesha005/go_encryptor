@@ -26,12 +26,12 @@ func ReturnSecret() []byte {
 	return token
 }
 
-func (user UserToken)GenerateToken(id int, username string) (string, error) {
+func (user UserToken)GenerateToken() (string, error) {
 	var secret = ReturnSecret()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"id":       id,
-			"username": username,
+			"id":       user.id,
+			"username": user.username,
 			"exp":      time.Now().Add(time.Hour * 24).Unix(),
 		})
 	tokenString, err := token.SignedString(secret)
@@ -58,23 +58,23 @@ func (user UserToken)ControlToken(input_token string) (string, error) {
 	return "It is ok ", nil
 }
 
-func (user UserToken)GetTokenData(tokenString string)(User,error){
+func (user UserToken)GetTokenData(tokenString string)(UserToken,error){
 	var secret =  ReturnSecret()
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
 	if err != nil {
-		return User{}, err
+		return UserToken{}, err
 	}
 	if !token.Valid {
-		return User{}, err
+		return UserToken{}, err
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
 		username := claims["username"].(string)
 		id := claims["id"].(int)
-		return User{id: id, username: username}, nil
+		return UserToken{id: id, username: username}, nil
 	}
-	return User{},errors.New("It is invalid token")
+	return UserToken{},errors.New("It is invalid token")
 }
 
