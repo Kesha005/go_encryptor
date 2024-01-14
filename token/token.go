@@ -72,8 +72,8 @@ func GetTokenData(tokenString string)(UserToken,error){
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
 		username := claims["username"].(string)
-		id := claims["id"].(int)
-		return UserToken{Id: id, Username: username}, nil
+		id := claims["id"].(float64)
+		return UserToken{Id: int(id), Username: username}, nil
 	}
 	return UserToken{},errors.New("It is invalid token")
 }

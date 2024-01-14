@@ -25,10 +25,10 @@ func TestToken(t *testing.T){
 	}
 	fmt.Println(data)
 
-	// tokendata, dataerr:= token.GetTokenData(stringToken)
-	// if dataerr !=nil{
-	// 	t.Error("There are some error")
-	// }
-	// fmt.Println(tokendata.Id)
+	tokendata, dataerr:= token.GetTokenData(stringToken)
+	if dataerr !=nil{
+		t.Error("There are some error")
+	}
+	fmt.Println(tokendata.Id)
 }
 
