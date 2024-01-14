@@ -12,9 +12,10 @@ import (
 
 func TestToken(t *testing.T){
 	godotenv.Load("../.env")
-	var username = "Kerim"
-	var id = 2
-	stringToken, err := token.GenerateToken(id ,username)
+	user := token.UserToken{2,"Kerimberdi"}
+	
+
+	stringToken, err := user.GenerateToken()
 	if err !=nil{
 		t.Error(err)
 	}
@@ -23,5 +24,11 @@ func TestToken(t *testing.T){
 		t.Error(terr)
 	}
 	fmt.Println(data)
+
+	// tokendata, dataerr:= token.GetTokenData(stringToken)
+	// if dataerr !=nil{
+	// 	t.Error("There are some error")
+	// }
+	// fmt.Println(tokendata.Id)
 }
 

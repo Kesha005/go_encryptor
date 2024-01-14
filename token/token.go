@@ -10,8 +10,8 @@ import (
 
 
 type UserToken struct {
-	id int
-	username string //it maybe email
+	Id int
+	Username string //it maybe email
 }
 
 
@@ -30,8 +30,8 @@ func (user UserToken)GenerateToken() (string, error) {
 	var secret = ReturnSecret()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"id":       user.id,
-			"username": user.username,
+			"id":       user.Id,
+			"username": user.Username,
 			"exp":      time.Now().Add(time.Hour * 24).Unix(),
 		})
 	tokenString, err := token.SignedString(secret)
@@ -42,7 +42,7 @@ func (user UserToken)GenerateToken() (string, error) {
 
 }
 
-func (user UserToken)ControlToken(input_token string) (string, error) {
+func ControlToken(input_token string) (string, error) {
 	var secret =  ReturnSecret()
 	token, err := jwt.Parse(input_token, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
@@ -58,7 +58,7 @@ func (user UserToken)ControlToken(input_token string) (string, error) {
 	return "It is ok ", nil
 }
 
-func (user UserToken)GetTokenData(tokenString string)(UserToken,error){
+func GetTokenData(tokenString string)(UserToken,error){
 	var secret =  ReturnSecret()
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
@@ -73,7 +73,7 @@ func (user UserToken)GetTokenData(tokenString string)(UserToken,error){
 	if ok && token.Valid {
 		username := claims["username"].(string)
 		id := claims["id"].(int)
-		return UserToken{id: id, username: username}, nil
+		return UserToken{Id: id, Username: username}, nil
 	}
 	return UserToken{},errors.New("It is invalid token")
 }
