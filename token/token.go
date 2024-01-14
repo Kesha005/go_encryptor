@@ -9,17 +9,24 @@ import (
 )
 
 
-type User struct {
+type UserToken struct {
 	id int
-	username string
+	username string //it maybe email
 }
+
+
+type JWT struct{
+	token string
+	exp time.Time
+}
+
 
 func ReturnSecret() []byte {
 	token := []byte(os.Getenv("SECRET_KEY"))
 	return token
 }
 
-func GenerateToken(id int, username string) (string, error) {
+func (user UserToken)GenerateToken(id int, username string) (string, error) {
 	var secret = ReturnSecret()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
@@ -35,7 +42,7 @@ func GenerateToken(id int, username string) (string, error) {
 
 }
 
-func ControlToken(input_token string) (string, error) {
+func (user UserToken)ControlToken(input_token string) (string, error) {
 	var secret =  ReturnSecret()
 	token, err := jwt.Parse(input_token, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
@@ -51,7 +58,7 @@ func ControlToken(input_token string) (string, error) {
 	return "It is ok ", nil
 }
 
-func GetTokenData(tokenString string)(User,error){
+func (user UserToken)GetTokenData(tokenString string)(User,error){
 	var secret =  ReturnSecret()
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
