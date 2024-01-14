@@ -9,22 +9,29 @@ import (
 )
 
 
-type User struct {
-	id int
-	username string
+type UserToken struct {
+	Id int
+	Username string //it maybe email
 }
+
+
+type JWT struct{
+	token string
+	exp time.Time
+}
+
 
 func ReturnSecret() []byte {
 	token := []byte(os.Getenv("SECRET_KEY"))
 	return token
 }
 
-func GenerateToken(id int, username string) (string, error) {
+func (user UserToken)GenerateToken() (string, error) {
 	var secret = ReturnSecret()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"id":       id,
-			"username": username,
+			"id":       user.Id,
+			"username": user.Username,
 			"exp":      time.Now().Add(time.Hour * 24).Unix(),
 		})
 	tokenString, err := token.SignedString(secret)
@@ -51,23 +58,23 @@ func ControlToken(input_token string) (string, error) {
 	return "It is ok ", nil
 }
 
-func GetTokenData(tokenString string)(User,error){
+func GetTokenData(tokenString string)(UserToken,error){
 	var secret =  ReturnSecret()
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
 	if err != nil {
-		return User{}, err
+		return UserToken{}, err
 	}
 	if !token.Valid {
-		return User{}, err
+		return UserToken{}, err
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
 		username := claims["username"].(string)
-		id := claims["id"].(int)
-		return User{id: id, username: username}, nil
+		id := claims["id"].(float64)
+		return UserToken{Id: int(id), Username: username}, nil
 	}
-	return User{},errors.New("It is invalid token")
+	return UserToken{},errors.New("It is invalid token")
 }
 
