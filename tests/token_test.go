@@ -29,6 +29,9 @@ func TestToken(t *testing.T){
 	if dataerr !=nil{
 		t.Error("There are some error")
 	}
+	if tokendata.Username !="Kerimberdi"{
+		t.Error("Its error")
+	}
 	fmt.Println(tokendata.Id)
 }
 
