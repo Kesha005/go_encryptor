@@ -25,7 +25,8 @@ func TestToken(t *testing.T){
 	}
 	fmt.Println(data)
 
-	tokendata, dataerr:= token.GetTokenData(stringToken)
+	authtoken := token.JWT{Token: stringToken}
+	tokendata, dataerr:= authtoken.GetTokenData()
 	if dataerr !=nil{
 		t.Error("There are some error")
 	}
