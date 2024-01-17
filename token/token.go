@@ -16,8 +16,7 @@ type UserToken struct {
 
 
 type JWT struct{
-	token string
-	exp time.Time
+	Token string
 }
 
 
@@ -58,9 +57,9 @@ func ControlToken(input_token string) (string, error) {
 	return "It is ok ", nil
 }
 
-func GetTokenData(tokenString string)(UserToken,error){
+func (tokenString JWT)GetTokenData()(UserToken,error){
 	var secret =  ReturnSecret()
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString.Token, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
 	if err != nil {
@@ -77,4 +76,6 @@ func GetTokenData(tokenString string)(UserToken,error){
 	}
 	return UserToken{},errors.New("It is invalid token")
 }
+
+
 
