@@ -77,5 +77,27 @@ func (tokenString JWT)GetTokenData()(UserToken,error){
 	return UserToken{},errors.New("It is invalid token")
 }
 
+func (tokenString JWT)RefreshToken()(string, error){
+	var secret = ReturnSecret()
+	token, err := jwt.Parse(tokenString.Token, func(token *jwt.Token)(interface{},error){
+		return secret,nil
+	})
+	if err!=nil{
+		return "",err
+	}
+	if !token.Valid{
+		data,err := tokenString.GetTokenData()
+		if err!=nil{
+			panic(err)
+		}
+		newtoken_data := UserToken{Id: data.Id, Username: data.Username}
+		refreshed,token_err := newtoken_data.GenerateToken()
+		if token_err!=nil{
+			panic(token_err)
+		}
+		return refreshed, nil
+	}
+	return tokenString.Token, nil
+}
 
 
