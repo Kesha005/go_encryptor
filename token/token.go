@@ -27,7 +27,7 @@ func ReturnSecret() []byte {
 
 func (user UserToken)GenerateToken() (string, error) {
 	var secret = ReturnSecret()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
+	token := jwt.NewWithClaims(&jwt.SigningMethodHMAC{},
 		jwt.MapClaims{
 			"id":       user.Id,
 			"username": user.Username,
