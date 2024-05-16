@@ -20,13 +20,13 @@ type JWT struct{
 }
 
 
-func ReturnSecret() []byte {
+func returnSecret() []byte {
 	token := []byte(os.Getenv("SECRET_KEY"))
 	return token
 }
 
 func (user UserToken)GenerateToken() (string, error) {
-	var secret = ReturnSecret()
+	var secret = returnSecret()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"id":       user.Id,
@@ -42,7 +42,7 @@ func (user UserToken)GenerateToken() (string, error) {
 }
 
 func ControlToken(input_token string) (string, error) {
-	var secret =  ReturnSecret()
+	var secret =  returnSecret()
 	token, err := jwt.Parse(input_token, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
@@ -58,7 +58,7 @@ func ControlToken(input_token string) (string, error) {
 }
 
 func (tokenString JWT)GetTokenData()(UserToken,error){
-	var secret =  ReturnSecret()
+	var secret =  returnSecret()
 	token, err := jwt.Parse(tokenString.Token, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
@@ -78,7 +78,7 @@ func (tokenString JWT)GetTokenData()(UserToken,error){
 }
 
 func (tokenString JWT)RefreshToken()(string, error){
-	var secret = ReturnSecret()
+	var secret = returnSecret()
 	token, err := jwt.Parse(tokenString.Token, func(token *jwt.Token)(interface{},error){
 		return secret,nil
 	})
