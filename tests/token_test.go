@@ -1,38 +1,99 @@
-package main
+package tests
 
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/Kesha005/go_encryptor/token"
-	"github.com/joho/godotenv"
 )
 
+func TestTokenMake(t *testing.T) {
 
+	tserv := jwt.New(jwt.JWTConfig{
+		Secret:               "12222",
+		AccessTokenDuration:  10,
+		RefreshTokenDuration: 150,
+		Issuer:               "test",
+		Audience:             "test-app",
+	})
 
-func TestToken(t *testing.T){
-	godotenv.Load("../.env")
-	user := token.UserToken{2,"Kerimberdi"}
-	
+	tokenstring, err := tserv.CreateAccessToken(1, "phone", "admin")
 
-	stringToken, err := user.GenerateToken()
-	if err !=nil{
+	if err != nil {
 		t.Error(err)
 	}
-	data, terr := token.ControlToken(stringToken)
-	if terr!=nil{
-		t.Error(terr)
-	}
-	fmt.Println(data)
 
-	authtoken := token.JWT{Token: stringToken}
-	tokendata, dataerr:= authtoken.GetTokenData()
-	if dataerr !=nil{
-		t.Error("There are some error")
-	}
-	if tokendata.Username !="Kerimberdi"{
-		t.Error("Its error")
-	}
-	fmt.Println(tokendata.Id)
+	fmt.Println(tokenstring)
 }
 
+func TestTokenValidate(t *testing.T) {
+	tserv := jwt.New(jwt.JWTConfig{
+		Secret:               "12222",
+		AccessTokenDuration:  10,
+		RefreshTokenDuration: 150,
+		Issuer:               "test",
+		Audience:             "test-app",
+	})
+
+	tokenstring, err := tserv.CreateAccessToken(1, "phone", "admin")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	ok, err := tserv.IsAccessToken(tokenstring)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !ok {
+		t.Error("Token verify failed")
+	}
+
+	payload, err := tserv.Verify(tokenstring)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if payload.UserID != 1 || payload.Role != "admin" {
+		t.Error("Failed to get correct token payload data")
+	}
+}
+
+func TestTokenExpireTime(t *testing.T) {
+	tserv := jwt.New(jwt.JWTConfig{
+		Secret:               "12222",
+		AccessTokenDuration:  3,
+		RefreshTokenDuration: 150,
+		Issuer:               "test",
+		Audience:             "test-app",
+	})
+
+	tokenstring, err := tserv.CreateAccessToken(1, "phone", "admin")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	ok, err := tserv.IsAccessToken(tokenstring)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !ok {
+		t.Error("Token verify failed")
+	}
+
+	time.Sleep(time.Second * 4)
+
+	_,eerr:= tserv.Verify(tokenstring)
+
+	if eerr==nil{
+		t.Error("Token must be expired")
+	}
+
+}

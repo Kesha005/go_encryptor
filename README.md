@@ -1,59 +1,103 @@
-#  Go encryptor
+# Go JWT
 
-Golang data encryptor  package  by Saparov
+Lightweight JWT access & refresh token package for Go, built on `golang-jwt/jwt/v5`.
 
-#  Installing
-Install from repository
-<pre>
-<code>go get github.com/Kesha005/go_encryptor</code>
-</pre>
+# Installing
+go get github.com/Kesha005/go_jwt
 
-# Where to use
+*(adjust the module path to match your actual repo)*
 
-Encryption and decryption are used to secure data in auth,message systems and in cybersecurity
+# Features
+- Access & refresh token generation
+- Token type validation (prevents using a refresh token as an access token and vice versa)
+- Expiration checking
+- Config-driven (secret, durations, issuer, audience)
 
-#  Usage
+# Config
 
-Firstly we need config our .env file and add there "SECRET_KEY" and "IV_16_KEY"
+`TokenMaker` is built from a `JWTConfig` struct:
 
-<h4>.ENV file</h4>
-<pre>
-    <code>
-    SECRET_KEY="thismustbe16or24digitkey."
-    IV_16_KEY="thisis16digitkey"
-    </code>
-</pre>
+```go
+type JWTConfig struct {
+    Secret               string
+    AccessTokenDuration  int // in seconds
+    RefreshTokenDuration int // in seconds
+    Issuer               string
+    Audience             string
+}
+```
 
-<h4>Example:</h4>
+No `.env` loading is done inside the package — just build the config yourself (from env vars, a config file, viper, whatever) and pass it in.
 
-<p>Import package</p>
+# Usage
 
-<pre>
-    <code>import (
-	"github.com/Kesha005/go_encryptor"
-	"fmt"
-	"github.com/joho/godotenv"
+## Init
 
-)</code>
-</pre>
+```go
+import "github.com/Kesha005/go_jwt"
 
-<p>Encryption and decryption</p>
-<pre>
-    <code>
-    StringToEncrypt := "Encrypting this string"
-	godotenv.Load(".env")
-	fmt.Println(StringToEncrypt)
-	encText, err := go_encryptor.Encrypt(StringToEncrypt)
-	if err != nil {
-		fmt.Println("error encrypting your classified text: ", err)
-	}
-	fmt.Println(encText)
-	// To decrypt the original StringToEncrypt
-	decText, err := go_encryptor.Decrypt(encText)
-	if err != nil {
-		fmt.Println("error decrypting your encrypted text: ", err)
-	}
-	fmt.Println(decText)
-    </code>
-</pre>
+cfg := jwt.JWTConfig{
+    Secret:               "your-secret-key",
+    AccessTokenDuration:  900,    // 15 min
+    RefreshTokenDuration: 604800, // 7 days
+}
 
+maker := jwt.New(cfg)
+```
+
+## Creating tokens
+
+```go
+accessToken, err := maker.CreateAccessToken(userID, phone, role)
+if err != nil {
+    // handle error
+}
+
+refreshToken, err := maker.CreateRefreshToken(userID, phone, role)
+if err != nil {
+    // handle error
+}
+```
+
+## Verifying tokens
+
+```go
+// Generic verify — accepts either token type
+payload, err := maker.Verify(accessToken)
+
+// Strict verify — errors out if the wrong token type is passed
+payload, err := maker.VerifyAccessToken(accessToken)
+payload, err := maker.VerifyRefreshToken(refreshToken)
+```
+
+## Checking token type
+
+```go
+isAccess, err := maker.IsAccessToken(token)
+isRefresh, err := maker.IsRefreshToken(token)
+```
+
+## Payload
+
+```go
+type Payload struct {
+    UserID    uint
+    Role      string
+    Phone     string
+    TokenType string
+    IssuedAt  time.Time
+    ExpiresAt time.Time
+}
+```
+
+## Errors
+
+```go
+jwt.ErrInvalidToken     // malformed/invalid signature/invalid claims
+jwt.ErrExpiredToken     // token expired
+jwt.ErrInvalidTokenType // wrong token type passed to a strict verify method
+```
+
+# Notes to self
+- `Verify` defaults `token_type` to `"access"` if it's missing, for backward compatibility with old tokens — keep that in mind if debugging weird type mismatches.
+- Only HMAC signing methods are accepted; anything else is rejected as `ErrInvalidToken`.

@@ -1,27 +1,33 @@
-package main
+package tests
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/Kesha005/go_encryptor"
-	"github.com/joho/godotenv"
 )
 
-func TestChiper(t *testing.T) {
-	godotenv.Load("../.env")
+func TestHasher(t *testing.T) {
+	hash, err := go_encryptor.HashPassword("123456")
 
-	var word string = "Hello world"
-	chiped, err := go_encryptor.Encrypt(word)
 	if err != nil {
-		fmt.Println(err)
+		t.Error(err)
 	}
-	dechiped, deeer := go_encryptor.Decrypt(chiped)
-	if deeer != nil {
-		fmt.Println(deeer.Error())
+
+	fmt.Println(hash)
+}
+
+func TestHashChecke(t *testing.T) {
+	hash, err := go_encryptor.HashPassword("123456")
+
+	if err != nil {
+		t.Error(err)
 	}
-	if dechiped != word {
-		t.Error("It is not word which we chiped")
+
+	ok:= go_encryptor.CheckHash("123456",hash)
+
+	if !ok{
+		t.Error("Something went wrong")
 	}
 
 }

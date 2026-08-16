@@ -1,8 +1,9 @@
 module github.com/Kesha005/go_encryptor
 
-go 1.19
+go 1.25.0
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/joho/godotenv v1.5.1
+	golang.org/x/crypto v0.55.0
 )
